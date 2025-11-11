@@ -6,18 +6,25 @@ import { useLocalStorage } from '@/lib/storage';
 import RoleTabs from './RoleTabs';
 import styles from '../styles/Chat.module.scss';
 
-const STORAGE_CHAT = 'smb-copilot-chat-v1';
+const STORAGE_CHATS = 'smb-copilot-chats-v2';
 const STORAGE_ROLE = 'smb-copilot-role-v1';
+
+// Тип для хранения чатов по ролям
+type RoleChats = Record<Role, ChatMessage[]>;
 
 export default function Chat() {
     const [activeRole, setActiveRole] = useLocalStorage<Role>(STORAGE_ROLE, 'Общий помощник');
-    const [messages, setMessages] = useLocalStorage<ChatMessage[]>(STORAGE_CHAT, []);
+    const [roleChats, setRoleChats] = useLocalStorage<RoleChats>(STORAGE_CHATS, {} as RoleChats);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const listRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const [mounted, setMounted] = useState(false);
+    
     useEffect(() => setMounted(true), []);
+
+
+    const messages = roleChats[activeRole] || [];
 
     useEffect(() => {
         listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
@@ -34,7 +41,12 @@ export default function Chat() {
         if (!trimmed || loading) return;
 
         const userMsg: ChatMessage = { id: uid(), from: 'user', text: trimmed, role: activeRole, ts: Date.now() };
-        setMessages(prev => [...prev, userMsg]);
+        
+        setRoleChats(prev => ({
+            ...prev,
+            [activeRole]: [...(prev[activeRole] || []), userMsg]
+        }));
+        
         setInput('');
         setLoading(true);
 
@@ -53,12 +65,25 @@ export default function Chat() {
                 role: (data?.role as Role) || activeRole,
                 ts: Date.now()
             };
-            setMessages(prev => [...prev, assistantMsg]);
-        } catch {
-            setMessages(prev => [
+            
+            // Добавляем ответ ассистента в чат текущей роли
+            setRoleChats(prev => ({
                 ...prev,
-                { id: uid(), from: 'assistant', text: 'Не удалось связаться с backend. Проверьте /api/query.', role: activeRole, ts: Date.now() }
-            ]);
+                [activeRole]: [...(prev[activeRole] || []), assistantMsg]
+            }));
+        } catch {
+            const errorMsg: ChatMessage = {
+                id: uid(), 
+                from: 'assistant', 
+                text: 'Не удалось связаться с backend. Проверьте /api/query.', 
+                role: activeRole, 
+                ts: Date.now()
+            };
+            
+            setRoleChats(prev => ({
+                ...prev,
+                [activeRole]: [...(prev[activeRole] || []), errorMsg]
+            }));
         } finally {
             setLoading(false);
             inputRef.current?.focus();
@@ -66,7 +91,11 @@ export default function Chat() {
     }
 
     function clearChat() {
-        setMessages([]);
+        // Очищаем только чат текущей активной роли
+        setRoleChats(prev => ({
+            ...prev,
+            [activeRole]: []
+        }));
     }
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -92,7 +121,7 @@ export default function Chat() {
             </header>
 
             <div className={styles.roleBar}>
-                <RoleTabs roles={ROLES} value={activeRole} onChange={setActiveRole} />
+                <RoleTabs roles={ROLES} value={activeRole} onChange={setActiveRole} roleChats={roleChats} />
             </div>
 
             <main className={styles.main}>
