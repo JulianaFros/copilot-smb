@@ -1,0 +1,59 @@
+.wrap {
+  margin-bottom: 12px;
+}
+
+.rowUser {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rowAssistant {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.bubbleUser {
+  max-width: 85%;
+  background: #EF3124;
+  color: #ffffff;
+  border-radius: 16px;
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 12px 14px;
+}
+
+.bubbleAssistant {
+  max-width: 85%;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 12px 14px;
+}
+
+.role {
+  margin-bottom: 4px;
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.text {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.timeUser {
+  margin-top: 4px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.timeAssistant {
+  margin-top: 4px;
+  font-size: 10px;
+  color: #9ca3af;
+}/*# sourceMappingURL=MessageBubble.module.css.map */

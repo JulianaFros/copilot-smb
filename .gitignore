@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+dist/
+.cache/
+.vscode/
+.vercel/
+*.log
+.env*

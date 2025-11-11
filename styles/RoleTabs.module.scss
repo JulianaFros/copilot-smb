@@ -1,0 +1,65 @@
+@use './_variables' as *;
+@use './_mixins' as *;
+
+
+.tabs {
+    display: grid;
+    gap: 8px;
+}
+
+.tabRow {
+    display: none;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+
+@media (min-width: 640px) {
+    .tabRow {
+        display: flex;
+    }
+}
+
+
+.tab {
+    @include button-reset;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid $gray-200;
+    background: $white;
+    color: #374151;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.tab:hover {
+    border-color: #d1d5db;
+}
+
+
+.tabActive {
+    @extend .tab;
+    background: $red-600;
+    color: $white;
+    border-color: $red-600;
+    box-shadow: $shadow-sm;
+}
+
+
+.selectWrap {
+    display: block;
+}
+
+@media (min-width: 640px) {
+    .selectWrap {
+        display: none;
+    }
+}
+
+.selectWrap select {
+    width: 100%;
+    border: 1px solid $gray-200;
+    border-radius: 12px;
+    padding: 8px 12px;
+    background: $white;
+}

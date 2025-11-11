@@ -1,0 +1,61 @@
+.tabs {
+  display: grid;
+  gap: 8px;
+}
+
+.tabRow {
+  display: none;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 640px) {
+  .tabRow {
+    display: flex;
+  }
+}
+.tab, .tabActive {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tab:hover, .tabActive:hover {
+  border-color: #d1d5db;
+}
+
+.tabActive {
+  background: #EF3124;
+  color: #ffffff;
+  border-color: #EF3124;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.selectWrap {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .selectWrap {
+    display: none;
+  }
+}
+.selectWrap select {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: #ffffff;
+}/*# sourceMappingURL=RoleTabls.module.css.map */

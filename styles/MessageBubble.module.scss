@@ -1,0 +1,63 @@
+@use './_variables' as *;
+
+
+.wrap {
+    margin-bottom: 12px;
+}
+
+.rowUser {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.rowAssistant {
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+.bubbleUser {
+    max-width: 85%;
+    background: $red-600;
+    color: $white;
+    border-radius: $radius-xl;
+    border-bottom-right-radius: 6px;
+    box-shadow: $shadow-sm;
+    padding: 12px 14px;
+}
+
+.bubbleAssistant {
+    max-width: 85%;
+    background: $white;
+    color: $gray-900;
+    border: 1px solid $gray-200;
+    border-radius: $radius-xl;
+    border-bottom-left-radius: 6px;
+    box-shadow: $shadow-sm;
+    padding: 12px 14px;
+}
+
+.role {
+    margin-bottom: 4px;
+    font-size: 10px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: $gray-500;
+}
+
+.text {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.timeUser {
+    margin-top: 4px;
+    font-size: 10px;
+    color: rgba($white, 0.7);
+}
+
+.timeAssistant {
+    margin-top: 4px;
+    font-size: 10px;
+    color: $gray-400;
+}
