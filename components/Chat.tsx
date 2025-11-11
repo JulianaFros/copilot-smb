@@ -69,6 +69,13 @@ export default function Chat() {
         setMessages([]);
     }
 
+    function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
     return (
         <div className={styles.wrapper}>
             <header className={styles.header}>
@@ -106,9 +113,11 @@ export default function Chat() {
                             className={styles.textarea}
                             value={input}
                             onChange={e => setInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
                             placeholder={`Спросить как ${activeRole.toLowerCase()}…`}
                             rows={1}
                         />
+                        <div className={styles.hint}>Enter для отправки, Shift+Enter для новой строки</div>
                     </div>
                     <button className={styles.sendBtn} type="submit" disabled={!input.trim() || loading}>
                         Отправить

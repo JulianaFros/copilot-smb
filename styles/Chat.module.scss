@@ -131,10 +131,24 @@
     box-shadow: $shadow-sm;
     outline: none;
     position: relative;
+    display: flex;
+    align-items: center;
 
     &::placeholder {
         color: $gray-400;
     }
+}
+
+.hint {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    font-size: 11px;
+    color: $gray-200;
+    pointer-events: none;
+    background: $white;
+    padding: 2px 4px;
+    border-radius: 4px;
 }
 
 .sendBtn {
