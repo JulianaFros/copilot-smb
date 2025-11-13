@@ -9,19 +9,35 @@ import styles from '../styles/Chat.module.scss';
 const STORAGE_CHATS = 'smb-copilot-chats-v2';
 const STORAGE_ROLE = 'smb-copilot-role-v1';
 
+const STORAGE_USER_ID = 'smb-copilot-user-id';
+const STORAGE_SESSION_ID = 'smb-copilot-session-id';
+
+const ASSISTANT_BY_ROLE: Record<Role, string> = {
+    'Маркетолог': 'MARKETING',
+    'Юрист': 'LEGAL',
+    'Бухгалтер': 'ACCOUNTING',
+    'HR': 'HR',
+    'Общий помощник': 'DEFAULT',
+};
+
 // Тип для хранения чатов по ролям
 type RoleChats = Record<Role, ChatMessage[]>;
 
 export default function Chat() {
     const [activeRole, setActiveRole] = useLocalStorage<Role>(STORAGE_ROLE, 'Общий помощник');
     const [roleChats, setRoleChats] = useLocalStorage<RoleChats>(STORAGE_CHATS, {} as RoleChats);
+    const [userId] = useLocalStorage<string>(STORAGE_USER_ID, uid());
+    const [sessionId, setSessionId] = useLocalStorage<string>(STORAGE_SESSION_ID, uid());
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const listRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const [mounted, setMounted] = useState(false);
-    
+
     useEffect(() => setMounted(true), []);
+    useEffect(() => {
+        setSessionId(uid());
+    }, [activeRole, setSessionId]);
 
 
     const messages = roleChats[activeRole] || [];
@@ -41,12 +57,12 @@ export default function Chat() {
         if (!trimmed || loading) return;
 
         const userMsg: ChatMessage = { id: uid(), from: 'user', text: trimmed, role: activeRole, ts: Date.now() };
-        
+
         setRoleChats(prev => ({
             ...prev,
             [activeRole]: [...(prev[activeRole] || []), userMsg]
         }));
-        
+
         setInput('');
         setLoading(true);
 
@@ -54,7 +70,15 @@ export default function Chat() {
             const res = await fetch('/api/query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ role: activeRole, message: trimmed, history: historyForApi })
+                body: JSON.stringify({
+                    userId,
+                    sessionId,
+                    assistant: ASSISTANT_BY_ROLE[activeRole],
+                    userName: 'default',
+                    role: activeRole,
+                    message: trimmed,
+                    history: historyForApi,
+                }),
             });
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const data = await res.json();
@@ -65,7 +89,7 @@ export default function Chat() {
                 role: (data?.role as Role) || activeRole,
                 ts: Date.now()
             };
-            
+
             // Добавляем ответ ассистента в чат текущей роли
             setRoleChats(prev => ({
                 ...prev,
@@ -73,13 +97,13 @@ export default function Chat() {
             }));
         } catch {
             const errorMsg: ChatMessage = {
-                id: uid(), 
-                from: 'assistant', 
-                text: 'Не удалось связаться с backend. Проверьте /api/query.', 
-                role: activeRole, 
+                id: uid(),
+                from: 'assistant',
+                text: 'Не удалось связаться с backend. Проверьте /api/query.',
+                role: activeRole,
                 ts: Date.now()
             };
-            
+
             setRoleChats(prev => ({
                 ...prev,
                 [activeRole]: [...(prev[activeRole] || []), errorMsg]
