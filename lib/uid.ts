@@ -1,3 +1,4 @@
 export function uid() {
-    return Math.random().toString(36).slice(2) + Date.now().toString(36)
+    const rand = Math.floor(Math.random() * 1_000_000_000);
+    return Date.now().toString() + rand.toString().padStart(9, '0');
 }
