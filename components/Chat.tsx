@@ -75,7 +75,6 @@ export default function Chat() {
                     sessionId,
                     assistant: ASSISTANT_BY_ROLE[activeRole],
                     userName: 'default',
-                    role: activeRole,
                     message: trimmed,
                     history: historyForApi,
                 }),
@@ -90,7 +89,6 @@ export default function Chat() {
                 ts: Date.now()
             };
 
-            // Добавляем ответ ассистента в чат текущей роли
             setRoleChats(prev => ({
                 ...prev,
                 [activeRole]: [...(prev[activeRole] || []), assistantMsg]
@@ -115,7 +113,6 @@ export default function Chat() {
     }
 
     function clearChat() {
-        // Очищаем только чат текущей активной роли
         setRoleChats(prev => ({
             ...prev,
             [activeRole]: []
